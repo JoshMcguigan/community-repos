@@ -1,0 +1,6 @@
+#! /bin/sh
+
+mkdir -p debpkgs
+
+rclone mount r2:debpkgs debpkgs --no-modtime --vfs-cache-mode full --daemon
+
