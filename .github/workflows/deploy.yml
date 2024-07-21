@@ -1,0 +1,35 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: deploy
+    container:
+      image: debian:bookworm
+      options: --device /dev/fuse --privileged
+      env:
+        R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        apt update
+        apt install -y ca-certificates fuse gettext-base rclone
+    - name: Configure
+      run: |
+        mkdir -p ~/.config/rclone
+        cat rclone.conf.template | envsubst > ~/.config/rclone/rclone.conf
+    - name: Mount debpkgs
+      run: |
+        mkdir -p debpkgs
+        rclone mount r2:debpkgs debpkgs --no-modtime --vfs-cache-mode full --daemon
+    - name: Check mount
+      run: ls debpkgs
+
