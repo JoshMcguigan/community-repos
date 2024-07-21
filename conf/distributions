@@ -1,0 +1,4 @@
+Codename: bookworm
+Architectures: amd64
+Components: main
+SignWith: BD81F5BFF305727393B582A1FB161DFD91FFB73B
