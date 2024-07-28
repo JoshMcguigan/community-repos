@@ -19,8 +19,8 @@ fn main() {
     let package_definitions = vec![Package {
         name: "zola",
         url: "https://github.com/getzola/zola.git",
-        tag: "v0.19.0",
-        version: "0.19.0-1",
+        tag: "v0.19.1",
+        version: "0.19.1-1",
     }];
     let packages_in_repo = get_packages_in_repo();
 
