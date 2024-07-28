@@ -22,7 +22,10 @@ jobs:
     - name: Install dependencies
       run: |
         apt update
-        apt install -y ca-certificates fuse gettext-base gpg rclone
+        apt install -y build-essential ca-certificates curl fuse gettext-base git gpg rclone reprepro
+        curl https://sh.rustup.rs -sSf | sh -s -- -y
+        . "$HOME/.cargo/env"
+        cargo install cargo-deb
     - name: Configure gpg
       run: |
         echo -n "$GPG_PRIVATE_KEY_BASE64" | base64 --decode | gpg --import
@@ -33,8 +36,17 @@ jobs:
     - name: Mount debpkgs
       run: |
         mkdir -p debpkgs
-        rclone mount r2:debpkgs debpkgs --no-modtime --vfs-cache-mode full --daemon
+        rclone mount r2:debpkgs debpkgs --no-modtime --vfs-cache-mode full --vfs-write-back 1s --daemon
     - name: Check mount
       run: |
         ls debpkgs
+    - name: Build & deploy packages
+      run: |
+        cd pkgr
+        . "$HOME/.cargo/env"
+        cargo run
+    - name: Upload all files
+      # rclone doesn't have a way to flush the cache and block until everything is uploaded.
+      run: |
+        sleep 60
 

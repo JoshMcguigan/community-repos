@@ -25,6 +25,17 @@ $ ./scripts/mount
 
 $ reprepro -S unknown -b debpkgs includedeb bookworm path/to.deb
 
+# Packages can be removed, which is often useful for testing.
+#
+# This should only be run against a local instance of the package repo, unless
+# the intent is to actually remove the package from the online repo.
+$ reprepro -b debpkgs remove bookworm $PACKAGE_NAME
+
+# Run pkgr to package up all known packages.
+cd pkgr
+cargo run
+cd ..
+
 $ ./scripts/unmount
 ```
 
